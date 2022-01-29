@@ -49,7 +49,7 @@ const Balloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<O
             //@ts-ignore
             lineRef.current?.geometry.setAttribute('position', new BufferAttribute(vertices, 3))
         })
-    }, [])
+    }, [anchorRef, ballonApi.position])
 
     return <>
         <mesh
@@ -62,6 +62,7 @@ const Balloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<O
             <meshLambertMaterial color="#ff7b00" />
         </mesh >
         <line
+            //@ts-ignore
             ref={lineRef}>
             <bufferGeometry />
             <lineBasicMaterial color={"#000000"} linewidth={30} />
@@ -79,3 +80,5 @@ const Anchor = forwardRef<Object3D, SphereProps>((props, ref) => {
         <meshStandardMaterial color="#000000" />
     </mesh>
 })
+
+Anchor.displayName = 'Anchor';
