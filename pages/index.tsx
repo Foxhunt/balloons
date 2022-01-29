@@ -1,4 +1,5 @@
 import { Physics } from '@react-three/cannon'
+import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { Bloom, EffectComposer, SSAO } from '@react-three/postprocessing'
 import type { NextPage } from 'next'
@@ -7,13 +8,13 @@ import AnchoredBaloon from '../components/AnchoredBaloon'
 const Home: NextPage = () => {
   return (
     <div style={{
-      height: "500px"
+      height: "100%"
     }}>
       <Canvas
         frameloop="demand"
         shadows
         gl={{ stencil: false, depth: false, alpha: false, antialias: false }}
-        camera={{ position: [0, 0, 10], fov: 50, near: 1, far: 40 }}
+        camera={{ position: [0, 0, 10], fov: 50, near: .1, far: 40 }}
       >
         <fog attach="fog" args={["red", 25, 40]} />
         <color attach="background" args={["#ffdd41"]} />
