@@ -9,12 +9,12 @@ interface props {
     count?: number
 }
 
-export default function AnchoredBaloon({ count = 1 }: props) {
+export default function AnchoredBalloon({ count = 1 }: props) {
     const anchorRef = useRef<Object3D>(null)
     const balloons = (new Array(count)).fill("")
 
     return <>
-        {balloons.map((_, i) => <Baloon
+        {balloons.map((_, i) => <Balloon
             key={i}
             anchorRef={anchorRef}
             position={[(ballonDistanz / balloons.length / 2) + (ballonDistanz / balloons.length * i) - (ballonDistanz / 2), 0, 0]}
@@ -26,7 +26,7 @@ export default function AnchoredBaloon({ count = 1 }: props) {
     </>
 }
 
-const Baloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<Object3D> }) => {
+const Balloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<Object3D> }) => {
     const [ballonRef, ballonApi] = useSphere(() => ({ ...props }))
     useSpring(anchorRef, ballonRef, { damping: 1, restLength: Math.random() * 2 + 1, stiffness: 4 })
 
@@ -44,7 +44,9 @@ const Baloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<Ob
             const ballonPosition = postition
             const anchorPosition = anchorRef.current?.position
 
+            //@ts-ignore
             const vertices = new Float32Array([...Object.values(ballonPosition), ...Object.values(anchorPosition)])
+            //@ts-ignore
             lineRef.current?.geometry.setAttribute('position', new BufferAttribute(vertices, 3))
         })
     }, [])

@@ -1,9 +1,8 @@
 import { Physics } from '@react-three/cannon'
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { Bloom, EffectComposer, SSAO } from '@react-three/postprocessing'
 import type { NextPage } from 'next'
-import AnchoredBaloon from '../components/AnchoredBaloon'
+import AnchoredBalloon from '../components/AnchoredBalloon'
 
 const Home: NextPage = () => {
   return (
@@ -31,7 +30,7 @@ const Home: NextPage = () => {
           shadow-camera-bottom={-10}
         />
         <Physics gravity={[0, 9.8, 0]} axisIndex={2}>
-          <AnchoredBaloon
+          <AnchoredBalloon
             count={3}
           />
         </Physics>
