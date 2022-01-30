@@ -1,9 +1,11 @@
 import { SphereProps, useSphere, useSpring } from "@react-three/cannon"
-import { useThree } from "@react-three/fiber"
-import { forwardRef, RefObject, useEffect, useRef } from "react"
+import { useStore, useThree } from "@react-three/fiber"
+import { forwardRef, RefObject, useEffect, useRef, useState } from "react"
 import { BufferAttribute, Object3D } from "three"
 
 const balloonDistanz = 7
+
+const balloonColors = ["#ff0000", "#13e400", "#ff7b00", "#ff48c2", "#0004ff"]
 
 interface props {
     count?: number
@@ -27,8 +29,9 @@ export default function AnchoredBalloon({ count = 1 }: props) {
 }
 
 const Balloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<Object3D> }) => {
+    const [color, setColor] = useState(balloonColors[Math.floor(balloonColors.length * Math.random())])
     const [balloonRef, balloonApi] = useSphere(() => ({ ...props }))
-    useSpring(anchorRef, balloonRef, { damping: 1, restLength: Math.random() * 2 + 1, stiffness: 4 })
+    useSpring(anchorRef, balloonRef, { damping: 1, restLength: Math.random() * 5 + 2, stiffness: 4 })
 
     const lineRef = useRef<Object3D>(null)
 
@@ -46,18 +49,22 @@ const Balloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<O
 
     const { viewport } = useThree()
 
+
     return <>
         <mesh
             ref={balloonRef}
             castShadow
             receiveShadow
+            onDoubleClick={() => {
+                setColor(balloonColors[Math.floor(balloonColors.length * Math.random())])
+            }}
             onPointerMove={event => {
                 if (event.nativeEvent.buttons > 0) {
                     balloonApi.position.set((event.spaceX * viewport.width) / 2, (event.spaceY * viewport.height) / 2, 0)
                 }
             }} >
             <sphereBufferGeometry />
-            <meshLambertMaterial color="#ff7b00" />
+            <meshLambertMaterial color={color} />
         </mesh >
         <line
             //@ts-ignore
@@ -69,12 +76,11 @@ const Balloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<O
 }
 
 const Anchor = forwardRef<Object3D, SphereProps>((props, ref) => {
-    useSphere(() => ({ type: "Kinematic", ...props }), ref)
+    useSphere(() => ({ type: "Kinematic", ...props, args: [.1] }), ref)
 
     return <mesh
-        ref={ref}
-        scale={.2} >
-        <sphereGeometry />
+        ref={ref}>
+        <sphereGeometry args={[.1]} />
         <meshStandardMaterial color="#000000" />
     </mesh>
 })
