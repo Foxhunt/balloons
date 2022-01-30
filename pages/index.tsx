@@ -6,11 +6,11 @@ import { useEffect, useState } from 'react'
 import AnchoredBalloon from '../components/AnchoredBalloon'
 
 const Home: NextPage = () => {
-  const [windDirection, setWindDirection] = useState(.1)
+  const [windDirection, setWindDirection] = useState(.3)
   useEffect(() =>{
     const intervallID = setInterval(() => {
       setWindDirection(direction => direction * -1)
-    }, 4000)
+    }, 2500)
 
     return () => {
       clearInterval(intervallID)
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
         camera={{ position: [0, 0, 10], fov: 50, near: .1, far: 40 }}
       >
         <fog attach="fog" args={["red", 25, 40]} />
-        <color attach="background" args={["#ffdd41"]} />
+        <color attach="background" args={["hsl(330, 91%, 90%)"]} />
         <ambientLight intensity={2} />
         <directionalLight position={[-10, -10, -5]} intensity={0.5} />
         <directionalLight
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
           gravity={[windDirection, 9.8, 0]} 
           axisIndex={2}>
           <AnchoredBalloon
-            count={10}
+            count={3}
           />
         </Physics>
         <EffectComposer multisampling={0}>
