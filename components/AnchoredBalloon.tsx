@@ -1,6 +1,6 @@
 import { SphereProps, useSphere, useSpring } from "@react-three/cannon"
-import { ThreeEvent, useFrame, useThree } from "@react-three/fiber"
-import { forwardRef, RefObject, useEffect, useRef, useState } from "react"
+import { useThree } from "@react-three/fiber"
+import { forwardRef, RefObject, useEffect, useRef } from "react"
 import { BufferAttribute, Object3D } from "three"
 
 const balloonDistanz = 7

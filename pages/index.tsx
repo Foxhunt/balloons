@@ -12,7 +12,7 @@ const Home: NextPage = () => {
       <Canvas
         frameloop="demand"
         shadows
-        gl={{ stencil: false, depth: false, alpha: false, antialias: false }}
+        gl={{ stencil: false, depth: false, alpha: false, antialias: true }}
         camera={{ position: [0, 0, 10], fov: 50, near: .1, far: 40 }}
       >
         <fog attach="fog" args={["red", 25, 40]} />
