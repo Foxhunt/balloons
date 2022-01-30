@@ -1,9 +1,9 @@
 import { SphereProps, useSphere, useSpring } from "@react-three/cannon"
-import { useFrame } from "@react-three/fiber"
+import { ThreeEvent, useFrame, useThree } from "@react-three/fiber"
 import { forwardRef, RefObject, useEffect, useRef, useState } from "react"
 import { BufferAttribute, Object3D } from "three"
 
-const ballonDistanz = 7
+const balloonDistanz = 7
 
 interface props {
     count?: number
@@ -17,9 +17,9 @@ export default function AnchoredBalloon({ count = 1 }: props) {
         {balloons.map((_, i) => <Balloon
             key={i}
             anchorRef={anchorRef}
-            position={[(ballonDistanz / balloons.length / 2) + (ballonDistanz / balloons.length * i) - (ballonDistanz / 2), 0, 0]}
-        mass={.5}
-        linearDamping={0.7} />)}
+            position={[(balloonDistanz / balloons.length / 2) + (balloonDistanz / balloons.length * i) - (balloonDistanz / 2), 0, 0]}
+            mass={.5}
+            linearDamping={0.7} />)}
         <Anchor
             position={[0, -4, 0]}
             ref={anchorRef} />
@@ -27,37 +27,35 @@ export default function AnchoredBalloon({ count = 1 }: props) {
 }
 
 const Balloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<Object3D> }) => {
-    const [ballonRef, ballonApi] = useSphere(() => ({ ...props }))
-    useSpring(anchorRef, ballonRef, { damping: 1, restLength: Math.random() * 2 + 1, stiffness: 4 })
+    const [balloonRef, balloonApi] = useSphere(() => ({ ...props }))
+    useSpring(anchorRef, balloonRef, { damping: 1, restLength: Math.random() * 2 + 1, stiffness: 4 })
 
     const lineRef = useRef<Object3D>(null)
 
-    const [isDown, setIsDown] = useState(false)
-    useFrame(({ mouse: { x, y }, viewport: { height, width } }) => {
-        if (isDown) {
-            ballonApi.position.set((x * width) / 2, (y * height) / 2, 0)
-        }
-    })
-
     useEffect(() => {
-        ballonApi.position.subscribe(postition => {
-            const ballonPosition = postition
+        balloonApi.position.subscribe(postition => {
+            const balloonPosition = postition
             const anchorPosition = anchorRef.current?.position
 
             //@ts-ignore
-            const vertices = new Float32Array([...Object.values(ballonPosition), ...Object.values(anchorPosition)])
+            const vertices = new Float32Array([...Object.values(balloonPosition), ...Object.values(anchorPosition)])
             //@ts-ignore
             lineRef.current?.geometry.setAttribute('position', new BufferAttribute(vertices, 3))
         })
-    }, [anchorRef, ballonApi.position])
+    }, [anchorRef, balloonApi.position])
+
+    const { viewport } = useThree()
 
     return <>
         <mesh
-            ref={ballonRef}
+            ref={balloonRef}
             castShadow
             receiveShadow
-            onPointerDown={() => setIsDown(true)}
-            onPointerUp={() => setIsDown(false)} >
+            onPointerMove={event => {
+                if (event.nativeEvent.buttons > 0) {
+                    balloonApi.position.set((event.spaceX * viewport.width) / 2, (event.spaceY * viewport.height) / 2, 0)
+                }
+            }} >
             <sphereBufferGeometry />
             <meshLambertMaterial color="#ff7b00" />
         </mesh >
@@ -65,7 +63,7 @@ const Balloon = ({ anchorRef, ...props }: SphereProps & { anchorRef: RefObject<O
             //@ts-ignore
             ref={lineRef}>
             <bufferGeometry />
-            <lineBasicMaterial color={"#000000"} linewidth={30} />
+            <lineBasicMaterial color={"#000000"} linewidth={3} />
         </line>
     </>
 }
